@@ -1,11 +1,17 @@
-import org.apache.spark.SparkContext
+import org.apache.spark.{SparkConf, SparkContext}
 
 object SparkExample {
   def main(args: Array[String]) = {
-    val masterUrl = "local"
-    val applicationName = "Spark example" //This should be centralised with the name in build.sbt
-    val sparkHome = "/usr/local/spark" //This should not be hardcoded in code
-    val sparkContext = new SparkContext(masterUrl, applicationName, sparkHome, Nil, Map(), Map())
+    // This is here only for debug reasons. It can be removed safely.
+    val propNamesJavaIterator = System.getProperties.stringPropertyNames.iterator
+    while (propNamesJavaIterator.hasNext) {
+      val key = propNamesJavaIterator.next()
+      println(s"SystemProperty: $key: ${System.getProperty(key)}")
+    }
+
+    // masterURL, appName and used jars comes in the JVM system properties, which are load from
+    // SparkConf constructor
+    val sparkContext = new SparkContext(new SparkConf())
 
     val input = sparkContext.textFile("input.txt") //Input file uri should be passed as parameter
     val count = input
